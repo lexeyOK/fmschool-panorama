@@ -5,74 +5,70 @@ ymaps.ready(function () {
         return;
     }
 
-    const imgPath = 'img/tiles/'
-    const pi =Math.PI;
-    let map = new Map([
-        ['pano1', [{
-            panoID: 'pano2',
-            direction: [-pi/4, 0]
-        }, {
-            panoID: 'pano3',
-            direction: [pi, 0]
-        }, ]],
-        ['pano2', [{
-            panoID: 'pano1',
-            direction: [pi-pi/6, 0]
-        }, {
-            panoID: 'pano5',
-            direction: [pi/12+pi/2, 0]
-        }, ]],
-        ['pano3', [{
-            panoID: 'pano4',
-            direction: [pi/6, 0]
-        }, {
-            panoID: 'pano1',
-            direction: [0, 0]
-        }, ]],
-        ['pano4', [{
-            panoID: 'pano3',
-            direction: [pi+pi/4, 0]
-        }, {
-            panoID: 'pano5',
-            direction: [-2*pi/6, 0]
-        }, ]],
-        ['pano5', [{
-            panoID: 'pano2',
-            direction: [-2*pi/3, 0]
-        }, {
-            panoID: 'pano4',
-            direction: [pi/2-pi/6, 0]
-        }, ]],
-    ]);
-    
-    class CreatePano {
-        constructor(panoName, Arrows) {
-            this.type = 'custom';
-            this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
-            this.position = [0, 0, 0];
-            this.tileSize = [512, 512];
-            let url1 = `${imgPath+panoName}/hq/`;
-            let url2 = `${imgPath+panoName}/lq/`;
-            this.tileLevels = [{
-                    getTileUrl: (x, y) => `${imgPath+panoName}/hq/${x}-${y}.jpg`,
-                    getImageSize: () => [8192, 4096],
-                },
-                {
-                    getTileUrl: (x, y) => `${imgPath+panoName}/lq/0-0.jpg`,
-                    getImageSize: () => [512, 256],
-                }
-            ];
-            this.connectionArrows = Arrows;
-        }
-    }
-    
-    
-    
-    let panoData = {};
-    
-    for (let node of map) {
-        panoData[node[0]] = new CreatePano(node[0],node[1]);
-    }
+	const imgPath = 'img/tiles/'
+	const pi = Math.PI;
+	let map = new Map([
+		['pano1', [{
+			panoID: 'pano2',
+			direction: [-pi/4, 0]
+		}, {
+			panoID: 'pano3',
+			direction: [pi, 0]
+		}, ]],
+		['pano2', [{
+			panoID: 'pano1',
+			direction: [pi-pi/6, 0]
+		}, {
+			panoID: 'pano5',
+			direction: [pi/12+pi/2, 0]
+		}, ]],
+		['pano3', [{
+			panoID: 'pano4',
+			direction: [pi/6, 0]
+		}, {
+			panoID: 'pano1',
+			direction: [0, 0]
+		}, ]],
+		['pano4', [{
+			panoID: 'pano3',
+			direction: [pi+pi/4, 0]
+		}, {
+			panoID: 'pano5',
+			direction: [-2*pi/6, 0]
+		}, ]],
+		['pano5', [{
+			panoID: 'pano2',
+			direction: [-2*pi/3, 0]
+		}, {
+			panoID: 'pano4',
+			direction: [pi/2-pi/6, 0]
+		}, ]],
+	]);
+
+	class CreatePano {
+		constructor(panoName, Arrows) {
+			this.type = 'custom';
+			this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
+			this.position = [0, 0, 0];
+			this.tileSize = [512, 512];
+			this.tileLevels = [{
+					getTileUrl: (x, y) => `${imgPath+panoName}/hq/${x}-${y}.jpg`,
+					getImageSize: () => [8192, 4096],
+				},
+				{
+					getTileUrl: (x, y) => `${imgPath+panoName}/lq/0-0.jpg`,
+					getImageSize: () => [512, 256],
+				}
+			];
+			this.connectionArrows = Arrows;
+		}
+	}
+
+	let panoData = {};
+
+	for (let node of map) {
+		panoData[node[0]] = new CreatePano(node[0],node[1]);
+	}
 
     // Функция для извлечения данных нужной панорамы из объекта panoData.
     function getConnectedPanoramaData(panoID) {
