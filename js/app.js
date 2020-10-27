@@ -231,25 +231,13 @@ ymaps.ready(function () {
         direction: [0, 0]
     });
 
-    btn1.onclick = function() {
-        //alert('1');
-        player.setPanorama(new MyPanorama(panoData.pano1));
-    };
-    btn2.onclick = function() {
-        //alert('1');
-        player.setPanorama(new MyPanorama(panoData.pano2));
-    };
-    btn3.onclick = function() {
-        //alert('1');
-        player.setPanorama(new MyPanorama(panoData.pano3));
-    };
-    btn4.onclick = function() {
-        //alert('1');
-        player.setPanorama(new MyPanorama(panoData.pano4));
-    };
-    btn5.onclick = function() {
-        //alert('1');
-        player.setPanorama(new MyPanorama(panoData.pano5));
-    };
+
+	for(let name of map.keys()){
+		let btn = document.createElement("button");
+		btn.id = name;
+		btn.innerText = name;																	
+		div.append(btn);
+		document.getElementById(name).onclick = () => player.setPanorama(new MyPanorama(panoData[name]));
+	}
 });
 
