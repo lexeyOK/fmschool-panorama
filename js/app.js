@@ -238,6 +238,45 @@ ymaps.ready(function () {
 		btn.innerText = name;																	
 		div.append(btn);
 		document.getElementById(name).onclick = () => player.setPanorama(new MyPanorama(panoData[name]));
-	}
+    }
+    
+    function dragElement(elmnt) {
+        let x = 0, y = 0, nx = 0, ny = 0;
+        elmnt.onmousedown = function dragMouseDown(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // get the mouse cursor position at startup:
+          nx = e.clientX;
+          ny = e.clientY;
+          document.onmouseup = closeDragElement;
+          document.onmousemove = elementDrag;
+        }
+      
+        function closeDragElement() {
+          // stop moving when mouse button is released:
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+      
+        function elementDrag(e) {
+          e = e || window.event;
+          e.preventDefault();
+          // calculate the new cursor position:
+          x = nx - e.clientX;
+          y = ny - e.clientY;
+          nx = e.clientX;
+          ny = e.clientY;
+          // set the element's new position:
+          elmnt.style.top = (elmnt.offsetTop - y) + "px";
+          elmnt.style.left = (elmnt.offsetLeft - x) + "px";
+        }
+      }
+      
+      restore.onclick = function (){
+          document.getElementById("div").style.top = 0;
+          document.getElementById("div").style.left = 0;
+      }
+      
+      dragElement(document.getElementById("div"));
 });
 
