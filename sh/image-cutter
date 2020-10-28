@@ -1,0 +1,18 @@
+#!/bin/bash^M
+if [ -z $1 ];then
+	echo  "./image-cutter.sh имя_файла"
+	exit 0
+else
+	pat="$(pwd)"
+	filename=$(basename -- "$1")
+	filename="${filename%.*}"
+	path="$(pwd)/$filename"
+	echo $path
+	mkdir "$path"
+	cd $path
+	mkdir hq
+	mkdir lq
+	#convert "$pat/$1" -crop 512x512 -set filename:tile "%[fx:page.x/512]-%[fx:page.y/512]" "hq/%[filename:tile].jpg"
+	convert "$pat/$1" -resize 1024x512 "lq/0-0.jpg"
+fi
+exit 0
