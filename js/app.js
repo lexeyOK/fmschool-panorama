@@ -228,7 +228,10 @@ ymaps.ready(function () {
 
     // Отображаем панораму на странице.
     var player = new ymaps.panorama.Player('player', panorama, {
-        direction: [0, 0]
+        direction: [0, 0],
+        controls:[
+            "fullscreenControl",
+            "zoomControl",]
     });
 
 
@@ -276,7 +279,7 @@ ymaps.ready(function () {
           document.getElementById("div").style.top = 0;
           document.getElementById("div").style.left = 0;
       }
-      
+
       dragElement(document.getElementById("div"));
 });
 
