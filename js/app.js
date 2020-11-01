@@ -77,7 +77,7 @@ ymaps.ready(function () {
     // Функция, загружающая изображение маркера с сервера.
     function loadImage(src) {
         return new ymaps.vow.Promise(function (resolve) {
-            var image = new Image();
+            let image = new Image();
             image.onload = function () {
                 resolve(image);
             };
@@ -138,7 +138,7 @@ ymaps.ready(function () {
         getIconSet: function () {
             return ymaps.vow.Promise.all([
                 loadImage(this._imgSrc.default),
-                loadImage(this._imgSrc.hovered)
+                loadImage(this._imgSrc.hovered),
             ]).spread(function (defaultImage, hoveredImage) {
                 return {
                     'default': {
@@ -224,10 +224,10 @@ ymaps.ready(function () {
         }
     });
 
-    var panorama = new MyPanorama(panoData.pano1);
+    const panorama = new MyPanorama(panoData.pano1);
 
     // Отображаем панораму на странице.
-    var player = new ymaps.panorama.Player('player', panorama, {
+    const player = new ymaps.panorama.Player('player', panorama, {
         direction: [0, 0],
         controls:["zoomControl"]
     });
