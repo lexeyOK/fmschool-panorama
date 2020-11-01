@@ -4,8 +4,8 @@ ymaps.ready(function () {
         // Если нет, то ничего не будем делать.
         return;
     }
-
-	const imgPath = 'img/tiles/'
+  
+	const imgPath = 'img/tiles/';
 	const pi = Math.PI;
 	let map = new Map([
 		['pano1', [{
@@ -122,7 +122,7 @@ ymaps.ready(function () {
         getPanorama: function () {
             return this._currentPanorama;
         }
-    })
+    });
 
     // Создаем класс, описывающий маркер-переход.
     function MarkerConnection(currentPanorama, imgSrc, position, nextPanorama) {
@@ -253,7 +253,7 @@ ymaps.ready(function () {
           ny = e.clientY;
           document.onmouseup = closeDragElement;
           document.onmousemove = elementDrag;
-        }
+        };
       
         function closeDragElement() {
           // stop moving when mouse button is released:
@@ -278,8 +278,7 @@ ymaps.ready(function () {
       restore.onclick = function (){
           document.getElementById("div").style.top = 0;
           document.getElementById("div").style.left = 0;
-      }
+      };
 
       dragElement(document.getElementById("div"));
 });
-
