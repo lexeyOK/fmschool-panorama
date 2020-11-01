@@ -59,8 +59,6 @@ class CreatePano {
 	}
 }
 
-
-
 let panoData = {};
 
 for (let node of map) {
