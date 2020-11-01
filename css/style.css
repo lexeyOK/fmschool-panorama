@@ -16,7 +16,10 @@ html, body, .player {
   background: rgba(0,0,0,0.5);
 }
 
-button{
+button, #help{
+  text-decoration: none;
+  font-size: 1rem;
+  font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;;
   color: #000;
   background: #fff;
   border: 0;
@@ -26,7 +29,8 @@ button{
   margin: 0.2em;
 }
 
-button:hover{
+button:hover,#help:hover{
   transition: background 0.11s ;
   background: #aaa;
 }
+
