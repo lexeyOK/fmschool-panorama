@@ -1,7 +1,7 @@
 ymaps.ready(function () {
 	// Для начала проверим, поддерживает ли плеер браузер пользователя.
 	if (!ymaps.panorama.isSupported()) {
-		// Если нет, то ничего не будем делать.
+		window.location.href = "/not-supported";
 		return;
 	}
 
