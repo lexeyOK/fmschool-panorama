@@ -229,7 +229,8 @@ ymaps.ready(function () {
     // Отображаем панораму на странице.
     const player = new ymaps.panorama.Player('player', panorama, {
         direction: [0, 0],
-        controls:["zoomControl"]
+        controls:["zoomControl"],
+	hotkeysEnabled: true,
     });
 
 
