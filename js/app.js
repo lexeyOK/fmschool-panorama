@@ -160,7 +160,7 @@ ymaps.ready(function () {
 	//---------------------------------------------------------
 	
 
-	const imgPath = 'img/tiles/';
+	const imgPath = 'img-sq/tiles/';
 	const pi = Math.PI;
 
 	class CreatePano {
@@ -170,11 +170,11 @@ ymaps.ready(function () {
 			this.position = [0, 0, 0];
 			this.tileSize = [512, 512];
 			this.tileLevels = [{
-					getTileUrl: (x, y) => `${imgPath + panoName}/hq/${x}-${y}.jpg`,
+					getTileUrl: (x, y) => `${imgPath + panoName}-sq/hq-sq/${x}-${y}.webp`,
 					getImageSize: () => [8192, 4096],
 				},
 				{
-					getTileUrl: (x, y) => `${imgPath + panoName}/lq/0-0.jpg`,
+					getTileUrl: (x, y) => `${imgPath + panoName}-sq/lq/0-0.jpg`,
 					getImageSize: () => [512, 256],
 				}
 			];
