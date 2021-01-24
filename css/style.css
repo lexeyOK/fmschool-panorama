@@ -6,7 +6,6 @@ html, body, .player {
 }
 
 #bar{
-  width: 40vw;
   position: absolute;
   top: 0;
   z-index: 1;
