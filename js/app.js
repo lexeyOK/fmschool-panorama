@@ -4,76 +4,8 @@ ymaps.ready(function () {
 		window.location.href = "/not-supported";
 		return;
 	}
-
-	const imgPath = 'img/tiles/';
-	const pi = Math.PI;
-	let map = new Map([
-		['pano1', [{
-			panoID: 'pano2',
-			direction: [-pi / 4, 0]
-		}, {
-			panoID: 'pano3',
-			direction: [pi, 0]
-		},]],
-		['pano2', [{
-			panoID: 'pano1',
-			direction: [pi - pi / 6, 0]
-		}, {
-			panoID: 'pano5',
-			direction: [pi / 12 + pi / 2, 0]
-		},]],
-		['pano3', [{
-			panoID: 'pano4',
-			direction: [pi / 6, 0]
-		}, {
-			panoID: 'pano1',
-			direction: [0, 0]
-		},]],
-		['pano4', [{
-			panoID: 'pano3',
-			direction: [pi + pi / 4, 0]
-		}, {
-			panoID: 'pano5',
-			direction: [-2 * pi / 6, 0]
-		},]],
-		['pano5', [{
-			panoID: 'pano2',
-			direction: [-2 * pi / 3, 0]
-		}, {
-			panoID: 'pano4',
-			direction: [pi / 2 - pi / 6, 0]
-		},]],
-	]);
-
-	class CreatePano {
-		constructor(panoName, Arrows) {
-			this.type = 'custom';
-			this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
-			this.position = [0, 0, 0];
-			this.tileSize = [512, 512];
-			this.tileLevels = [{
-				getTileUrl: (x, y) => `${imgPath + panoName}/hq/${x}-${y}.jpg`,
-				getImageSize: () => [8192, 4096],
-			},
-			{
-				getTileUrl: (x, y) => `${imgPath + panoName}/lq/0-0.jpg`,
-				getImageSize: () => [512, 256],
-			}
-			];
-			this.connectionArrows = Arrows;
-		}
-	}
-
-	let panoData = {};
-
-	for (let node of map) {
-		panoData[node[0]] = new CreatePano(node[0], node[1]);
-	}
-
-	// Функция для извлечения данных нужной панорамы из объекта panoData.
-	function getConnectedPanoramaData(panoID) {
-		return panoData[panoID];
-	}
+	(async () => {
+	//---------------------------------------------------------
 	// Функция, загружающая изображение маркера с сервера.
 	function loadImage(src) {
 		return new ymaps.vow.Promise(function (resolve) {
@@ -81,7 +13,7 @@ ymaps.ready(function () {
 			image.onload = function () {
 				resolve(image);
 			};
-			image.crossOrigin = 'anonymous';
+			image.crossOrigin = "anonymous";
 			image.src = src;
 		});
 	}
@@ -100,18 +32,18 @@ ymaps.ready(function () {
 			// то создаем объект панорамы MyPanorama.
 			// Если нужно перейти на Яндекс.Панораму, то для получения объекта
 			// панорамы воспользуемся функцией ymaps.panorama.locate.
-			if (this._connectedPanorama.type == 'custom') {
-				return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama));
-			} else if (this._connectedPanorama.type == 'yandex') {
-				return ymaps.panorama.locate(this._connectedPanorama.coords).then(
-					function (panoramas) {
+			if (this._connectedPanorama.type == "custom") {
+				return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama, panoData));
+			} else if (this._connectedPanorama.type == "yandex") {
+				return ymaps.panorama
+					.locate(this._connectedPanorama.coords)
+					.then(function (panoramas) {
 						if (panoramas.length) {
 							return panoramas[0];
 						} else {
-							return ymaps.vow.reject(new Error('Панорама не нашлась.'));
+							return ymaps.vow.reject(new Error("Панорама не нашлась."));
 						}
-					}
-				);
+					});
 			}
 		},
 		// Направление взгляда на панораму, на которую будет осуществляться переход.
@@ -121,7 +53,7 @@ ymaps.ready(function () {
 		// Ссылка на текущую панораму, из которой осуществляется переход.
 		getPanorama: function () {
 			return this._currentPanorama;
-		}
+		},
 	});
 
 	// Создаем класс, описывающий маркер-переход.
@@ -141,14 +73,14 @@ ymaps.ready(function () {
 				loadImage(this._imgSrc.hovered),
 			]).spread(function (defaultImage, hoveredImage) {
 				return {
-					'default': {
+					default: {
 						image: defaultImage,
-						offset: [0, 0]
+						offset: [0, 0],
 					},
 					hovered: {
 						image: hoveredImage,
-						offset: [0, 0]
-					}
+						offset: [0, 0],
+					},
 				};
 			});
 		},
@@ -163,24 +95,24 @@ ymaps.ready(function () {
 		// Чтобы по клику на маркер осуществлялся переход на другую панораму,
 		// реализуем метод getConnectedPanorama.
 		getConnectedPanorama: function () {
-			if (this._connectedPanorama.type == 'custom') {
-				return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama));
-			} else if (this._connectedPanorama.type == 'yandex') {
-				return ymaps.panorama.locate(this._connectedPanorama.coords).then(
-					function (panoramas) {
+			if (this._connectedPanorama.type == "custom") {
+				return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama, panoData));
+			} else if (this._connectedPanorama.type == "yandex") {
+				return ymaps.panorama
+					.locate(this._connectedPanorama.coords)
+					.then(function (panoramas) {
 						if (panoramas.length) {
 							return panoramas[0];
 						} else {
-							return ymaps.vow.reject(new Error('Панорама не нашлась.'));
+							return ymaps.vow.reject(new Error("Панорама не нашлась."));
 						}
-					}
-				);
+					});
 			}
-		}
+		},
 	});
 
 	// Класс панорамы.
-	function MyPanorama(obj) {
+	function MyPanorama(obj, panoData) {
 		ymaps.panorama.Base.call(this);
 		this._angularBBox = obj.angularBBox;
 		this._position = obj.position;
@@ -188,15 +120,16 @@ ymaps.ready(function () {
 		this._tileLevels = obj.tileLevels;
 		// Получаем массив экземпляров класса, описывающего переход по стрелке из
 		// одной панорамы на другую.
-		this._connectionArrows = obj.connectionArrows.map(function (connectionArrow) {
+		this._connectionArrows = obj.connectionArrows.map(function (
+			connectionArrow
+		) {
 			return new ConnectionArrow(
 				this, // Текущая панорама.
 				connectionArrow.direction, // Направление взгляда на панораму, на которую делаем переход.
-				getConnectedPanoramaData(connectionArrow.panoID) // Данные панорамы, на которую делаем переход.
+				panoData[connectionArrow.panoID] // Данные панорамы, на которую делаем переход.
 			);
-		}, this);
-
-
+		},
+		this);
 	}
 
 	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
@@ -221,29 +154,69 @@ ymaps.ready(function () {
 		},
 		getCoordSystem: function () {
 			return ymaps.coordSystem.cartesian;
+		},
+	});
+
+	//---------------------------------------------------------
+	
+
+	const imgPath = 'img/tiles/';
+	const pi = Math.PI;
+
+	class CreatePano {
+		constructor(panoName, Arrows) {
+			this.type = 'custom';
+			this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
+			this.position = [0, 0, 0];
+			this.tileSize = [512, 512];
+			this.tileLevels = [{
+					getTileUrl: (x, y) => `${imgPath + panoName}/hq/${x}-${y}.jpg`,
+					getImageSize: () => [8192, 4096],
+				},
+				{
+					getTileUrl: (x, y) => `${imgPath + panoName}/lq/0-0.jpg`,
+					getImageSize: () => [512, 256],
+				}
+			];
+			this.connectionArrows = Arrows;
 		}
-	});
-
-	const panorama = new MyPanorama(panoData.pano1);
-
-	// Отображаем панораму на странице.
-	const player = new ymaps.panorama.Player('player', panorama, {
-		direction: [0, 0],
-		controls: ["zoomControl"],
-		hotkeysEnabled: true,
-	});
-
-
-	for (let name of map.keys()) {
-		let btn = document.createElement("button");
-		btn.id = name;
-		btn.innerText = name;
-		div.append(btn);
-		document.getElementById(name).onclick = () => player.setPanorama(new MyPanorama(panoData[name]));
 	}
 
+	
+		const json = await fetch("./js/panodata.json");
+		const obj = await json.json();
+		const map = new Map(Object.entries(obj));
+		let panoData = {};
+
+		for (let node of map) {
+			panoData[node[0]] = new CreatePano(node[0], node[1]);
+		}
+
+		const panorama = new MyPanorama(panoData.pano1, panoData);
+
+		// Отображаем панораму на странице.
+		const player = new ymaps.panorama.Player('player', panorama, {
+			direction: [0, 0],
+			controls: ["zoomControl"],
+			hotkeysEnabled: true,
+		});
+
+		for (let name of map.keys()) {
+			let btn = document.createElement("button");
+			btn.id = name;
+			btn.innerText = name;
+			bar.append(btn);
+			document.getElementById(name).onclick = function () {
+				return player.setPanorama(new MyPanorama(panoData[name], panoData));
+			};
+		}
+	})();
+
 	function dragElement(elmnt) {
-		let x = 0, y = 0, nx = 0, ny = 0;
+		let x = 0,
+			y = 0,
+			nx = 0,
+			ny = 0;
 		elmnt.onmousedown = function dragMouseDown(e) {
 			e = e || window.event;
 			e.preventDefault();
@@ -269,8 +242,6 @@ ymaps.ready(function () {
 			nx = clamp(0, e.clientX, window.innerWidth);
 			ny = clamp(0, e.clientY, window.innerHeight);
 			// set the element's new position:
-			//console.log(ny);
-			//console.log(nx);
 			elmnt.style.top = clamp(0, elmnt.offsetTop - y, window.innerHeight - elmnt.offsetHeight) + 'px';
 			elmnt.style.left = clamp(0, elmnt.offsetLeft - x, window.innerWidth - elmnt.offsetWidth) + 'px';
 		}
@@ -281,11 +252,10 @@ ymaps.ready(function () {
 	}
 
 	restore.onclick = function () {
-		document.getElementById("div").style.top = 0;
-		document.getElementById("div").style.left = 0;
+		document.getElementById("bar").style.top = 0;
+		document.getElementById("bar").style.left = 0;
 	};
 
-	dragElement(document.getElementById("div"));
-	//console.log(window.innerHeight);
-	//console.log(window.innerWidth);
+	dragElement(document.getElementById("bar"));
+
 });
