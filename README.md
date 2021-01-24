@@ -1,2 +1,5 @@
 # fmschool-panorama
-panorama for fmsh
+## Панорама для Физ-Мат школы  
+### Исспользовано 
+  * [Yandex Map API](yandex.ru/dev/maps/jsapi/)
+  * JS, HTML, CSS
