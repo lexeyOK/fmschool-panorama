@@ -242,8 +242,14 @@ ymaps.ready(function () {
 			nx = clamp(0, e.clientX, window.innerWidth);
 			ny = clamp(0, e.clientY, window.innerHeight);
 			// set the element's new position:
-			elmnt.style.top = clamp(0, elmnt.offsetTop - y, window.innerHeight - elmnt.offsetHeight) + 'px';
-			elmnt.style.left = clamp(0, elmnt.offsetLeft - x, window.innerWidth - elmnt.offsetWidth) + 'px';
+			elmnt.style.top = clamp(
+				0,
+				elmnt.offsetTop - y,
+				window.innerHeight - elmnt.offsetHeight) + 'px';
+			elmnt.style.left = clamp(
+				0,
+				elmnt.offsetLeft - x,
+				window.innerWidth - elmnt.offsetWidth) + 'px';
 		}
 
 		function clamp(min, val, max) {
