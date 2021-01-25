@@ -5,7 +5,11 @@ html, body, .player {
   padding: 0;
 }
 
-#bar{
+body {
+  background-color: #8e42bd;
+}
+
+#bar {
   position: absolute;
   top: 0;
   z-index: 1;
@@ -16,7 +20,7 @@ html, body, .player {
   background: rgba(0,0,0,0.5);
 }
 
-button, #help{
+button, #help {
   text-decoration: none;
   font-size: 1rem;
   font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;;
