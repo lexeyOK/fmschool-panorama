@@ -1,4 +1,4 @@
-#!/bin/bash^M
+#!/bin/bash
 if [ -z $1 ];then
 	echo  "./image-cutter.sh имя_файла"
 	exit 0

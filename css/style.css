@@ -6,7 +6,8 @@ html, body, .player {
 }
 
 body {
-  background-color: #8e42bd;
+  background: rgb(33,194,111);
+  background: linear-gradient(63deg, rgba(33,194,111,1) 0%, rgba(45,90,240,1) 100%);
 }
 
 #bar {
