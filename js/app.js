@@ -4,20 +4,8 @@ ymaps.ready(function () {
 		window.location.href = "/not-supported";
 		return;
 	}
-	(async () => {
-	//---------------------------------------------------------
-	// Функция, загружающая изображение маркера с сервера.
-	function loadImage(src) {
-		return new ymaps.vow.Promise(function (resolve) {
-			let image = new Image();
-			image.onload = function () {
-				resolve(image);
-			};
-			image.crossOrigin = "anonymous";
-			image.src = src;
-		});
-	}
 
+	//---------------------------------------------------------
 	// Создаем класс, описывающий переход между панорамами по стандартной стрелке.
 	function ConnectionArrow(currentPanorama, direction, nextPanorama) {
 		this.properties = new ymaps.data.Manager();
@@ -56,61 +44,6 @@ ymaps.ready(function () {
 		},
 	});
 
-	// Создаем класс, описывающий маркер-переход.
-	function MarkerConnection(currentPanorama, imgSrc, position, nextPanorama) {
-		// В классе должно быть определено поле properties.
-		this.properties = new ymaps.data.Manager();
-		this._panorama = currentPanorama;
-		this._position = position;
-		this._imgSrc = imgSrc;
-		this._connectedPanorama = nextPanorama;
-	}
-
-	ymaps.util.defineClass(MarkerConnection, {
-		getIconSet: function () {
-			return ymaps.vow.Promise.all([
-				loadImage(this._imgSrc.default),
-				loadImage(this._imgSrc.hovered),
-			]).spread(function (defaultImage, hoveredImage) {
-				return {
-					default: {
-						image: defaultImage,
-						offset: [0, 0],
-					},
-					hovered: {
-						image: hoveredImage,
-						offset: [0, 0],
-					},
-				};
-			});
-		},
-		// Текущая панорама, из которой осуществляется переход.
-		getPanorama: function () {
-			return this._panorama;
-		},
-		// Позиция маркера на текущей панораме.
-		getPosition: function () {
-			return this._position;
-		},
-		// Чтобы по клику на маркер осуществлялся переход на другую панораму,
-		// реализуем метод getConnectedPanorama.
-		getConnectedPanorama: function () {
-			if (this._connectedPanorama.type == "custom") {
-				return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama, panoData));
-			} else if (this._connectedPanorama.type == "yandex") {
-				return ymaps.panorama
-					.locate(this._connectedPanorama.coords)
-					.then(function (panoramas) {
-						if (panoramas.length) {
-							return panoramas[0];
-						} else {
-							return ymaps.vow.reject(new Error("Панорама не нашлась."));
-						}
-					});
-			}
-		},
-	});
-
 	// Класс панорамы.
 	function MyPanorama(obj, panoData) {
 		ymaps.panorama.Base.call(this);
@@ -121,15 +54,15 @@ ymaps.ready(function () {
 		// Получаем массив экземпляров класса, описывающего переход по стрелке из
 		// одной панорамы на другую.
 		this._connectionArrows = obj.connectionArrows.map(function (
-			connectionArrow
-		) {
-			return new ConnectionArrow(
-				this, // Текущая панорама.
-				connectionArrow.direction, // Направление взгляда на панораму, на которую делаем переход.
-				panoData[connectionArrow.panoID] // Данные панорамы, на которую делаем переход.
-			);
-		},
-		this);
+				connectionArrow
+			) {
+				return new ConnectionArrow(
+					this, // Текущая панорама.
+					connectionArrow.direction, // Направление взгляда на панораму, на которую делаем переход.
+					panoData[connectionArrow.panoID] // Данные панорамы, на которую делаем переход.
+				);
+			},
+			this);
 	}
 
 	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
@@ -156,37 +89,37 @@ ymaps.ready(function () {
 			return ymaps.coordSystem.cartesian;
 		},
 	});
-
+	let panoData = {};
 	//---------------------------------------------------------
-	
+	(async (panodata) => {
 
-	const imgPath = 'img-sq/tiles/';
-	const pi = Math.PI;
+		const imgPath = 'img-sq/tiles/';
+		const pi = Math.PI;
 
-	class CreatePano {
-		constructor(panoName, Arrows) {
-			this.type = 'custom';
-			this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
-			this.position = [0, 0, 0];
-			this.tileSize = [512, 512];
-			this.tileLevels = [{
-					getTileUrl: (x, y) => `${imgPath + panoName}-sq/hq-sq/${x}-${y}.webp`,
-					getImageSize: () => [8192, 4096],
-				},
-				{
-					getTileUrl: (x, y) => `${imgPath + panoName}-sq/lq/0-0.jpg`,
-					getImageSize: () => [512, 256],
-				}
-			];
-			this.connectionArrows = Arrows;
+		class CreatePano {
+			constructor(panoName, Arrows) {
+				this.type = 'custom';
+				this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
+				this.position = [0, 0, 0];
+				this.tileSize = [512, 512];
+				this.tileLevels = [{
+						getTileUrl: (x, y) => `${imgPath + panoName}-sq/hq-sq/${x}-${y}.webp`,
+						getImageSize: () => [8192, 4096],
+					},
+					{
+						getTileUrl: (x, y) => `${imgPath + panoName}-sq/lq/0-0.jpg`,
+						getImageSize: () => [512, 256],
+					}
+				];
+				this.connectionArrows = Arrows;
+			}
 		}
-	}
 
-	
+
 		const json = await fetch("./js/panodata.json");
 		const obj = await json.json();
 		const map = new Map(Object.entries(obj));
-		let panoData = {};
+
 
 		for (let node of map) {
 			panoData[node[0]] = new CreatePano(node[0], node[1]);
@@ -210,7 +143,7 @@ ymaps.ready(function () {
 				return player.setPanorama(new MyPanorama(panoData[name], panoData));
 			};
 		}
-	})();
+	})(panoData);
 
 	function dragElement(elmnt) {
 		let x = 0,
