@@ -5,17 +5,14 @@ ymaps.ready(function () {
 		return;
 	}
 
-	//---------------------------------------------------------
-	// Создаем класс, описывающий переход между панорамами по стандартной стрелке.
-	function ConnectionArrow(currentPanorama, direction, nextPanorama) {
-		this.properties = new ymaps.data.Manager();
-		this._currentPanorama = currentPanorama;
-		this._direction = direction;
-		this._connectedPanorama = nextPanorama;
-	}
-
-	ymaps.util.defineClass(ConnectionArrow, {
-		getConnectedPanorama: function () {
+    class ConnectionArrow {
+        constructor(currentPanorama, direction, nextPanorama) {
+            this.properties = new ymaps.data.Manager();
+            this._currentPanorama = currentPanorama;
+            this._direction = direction;
+            this._connectedPanorama = nextPanorama;
+        }
+        getConnectedPanorama() {
 			// Если переход будет осуществляться на пользовательскую панораму,
 			// то создаем объект панорамы MyPanorama.
 			// Если нужно перейти на Яндекс.Панораму, то для получения объекта
@@ -33,19 +30,19 @@ ymaps.ready(function () {
 						}
 					});
 			}
-		},
+		}
 		// Направление взгляда на панораму, на которую будет осуществляться переход.
-		getDirection: function () {
+		getDirection() {
 			return this._direction;
-		},
+		}
 		// Ссылка на текущую панораму, из которой осуществляется переход.
-		getPanorama: function () {
+		getPanorama() {
 			return this._currentPanorama;
-		},
-	});
+		}
+    }
 
-	// Класс панорамы.
-	function MyPanorama(obj, panoData) {
+
+    function MyPanorama(obj, panoData) {
 		ymaps.panorama.Base.call(this);
 		this._angularBBox = obj.angularBBox;
 		this._position = obj.position;
@@ -65,7 +62,7 @@ ymaps.ready(function () {
 			this);
 	}
 
-	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
+    ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
 		// Чтобы добавить на панораму стандартные стрелки переходов,
 		// реализуем метод getConnectionArrows.
 		getConnectionArrows: function () {
@@ -90,8 +87,8 @@ ymaps.ready(function () {
 		},
 	});
 	let panoData = {};
-	//---------------------------------------------------------
-	(async () => {
+
+	(async (panodata) => {
 
 		const imgPath = 'img-sq/tiles/';
 		const pi = Math.PI;
@@ -143,7 +140,8 @@ ymaps.ready(function () {
 				return player.setPanorama(new MyPanorama(panoData[name], panoData));
 			};
 		}
-	})();
+    })(panoData);
+
 
 	function dragElement(el) {
 		let x = 0,
