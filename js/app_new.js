@@ -5,14 +5,15 @@ ymaps.ready(function () {
 		return;
 	}
 
-	class ConnectionArrow {
-		constructor(currentPanorama, direction, nextPanorama) {
-			this.properties = new ymaps.data.Manager();
-			this._currentPanorama = currentPanorama;
-			this._direction = direction;
-			this._connectedPanorama = nextPanorama;
-		}
-		getConnectedPanorama() {
+	function ConnectionArrow(currentPanorama, direction, nextPanorama) {
+		this.properties = new ymaps.data.Manager();
+		this._currentPanorama = currentPanorama;
+		this._direction = direction;
+		this._connectedPanorama = nextPanorama;
+	}
+
+	ymaps.util.defineClass(ConnectionArrow, {
+		getConnectedPanorama: function () {
 			// Если переход будет осуществляться на пользовательскую панораму,
 			// то создаем объект панорамы MyPanorama.
 			// Если нужно перейти на Яндекс.Панораму, то для получения объекта
@@ -30,16 +31,16 @@ ymaps.ready(function () {
 						}
 					});
 			}
-		}
+		},
 		// Направление взгляда на панораму, на которую будет осуществляться переход.
-		getDirection() {
+		getDirection: function () {
 			return this._direction;
-		}
+		},
 		// Ссылка на текущую панораму, из которой осуществляется переход.
-		getPanorama() {
+		getPanorama: function () {
 			return this._currentPanorama;
-		}
-	}
+		},
+	});
 
 	function renderImage(text) {
 		var ctx = document.createElement('canvas').getContext('2d');
@@ -57,11 +58,12 @@ ymaps.ready(function () {
 
 	// Класс маркера.
 	class Marker {
-		constructor(text, panorama) {
+		constructor(text, position, panorama) {
 			// В классе должно быть определено поле properties.
 			this.properties = new ymaps.data.Manager();
 			this._panorama = panorama;
-			this.text = text.position;
+			this._position = position
+			this.text = text;
 		}
 		getIconSet() {
 			return {
@@ -74,7 +76,7 @@ ymaps.ready(function () {
 		getPanorama() {
 			return this._panorama;
 		}
-		getPositionn() {
+		getPosition() {
 			return this._position;
 		}
 	}
@@ -87,18 +89,22 @@ ymaps.ready(function () {
 		this._tileLevels = obj.tileLevels;
 		this._markers = obj.markers.map((marker) => new Marker(marker.text), this);
 		this._connectionArrows = obj.connectionArrows.map(
-			(connectionArrow) =>
-			new ConnectionArrow(
-				this,
-				connectionArrow.direction,
-				panoData[connectionArrow.panoID]
-			),
+			function (connectionArrow) {
+				return new ConnectionArrow(
+					this,
+					connectionArrow.direction,
+					panoData[connectionArrow.panoID]
+				);
+			},
 			this);
 	}
 
 	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
+		//getMarkers: function () {
+		//	return this._markers;
+		//},
 		getMarkers: function () {
-			return [new Marker(markerData, this)];
+			return [new Marker('aaaaa', [0, 0, 0], this)];
 		},
 		// Чтобы добавить на панораму стандартные стрелки переходов,
 		// реализуем метод getConnectionArrows.
@@ -124,6 +130,9 @@ ymaps.ready(function () {
 		},
 	});
 
+	const pi = Math.PI;
+	const imgPath = 'img-sq/tiles/';
+
 	class CreatePano {
 		constructor(panoName, Arrows, markers) {
 			this.type = 'custom';
@@ -140,7 +149,7 @@ ymaps.ready(function () {
 				}
 			];
 			this.connectionArrows = Arrows;
-			this.makers = markers
+			this.markers = markers;
 		}
 	}
 
@@ -148,16 +157,13 @@ ymaps.ready(function () {
 
 	(async (panodata) => {
 
-		const imgPath = 'img-sq/tiles/';
-		const pi = Math.PI;
-
 		const json = await fetch("./js/panodata_new.json");
 		const obj = await json.json();
 		const map = new Map(Object.entries(obj));
 
 		for (let [name, props] of map) {
-			panoData[name] = new CreatePano(
-				name,
+			console.log(props);
+			panoData[name] = new CreatePano(name,
 				props.connected_pano,
 				props.markers);
 		}
@@ -181,7 +187,6 @@ ymaps.ready(function () {
 			};
 		}
 	})(panoData);
-
 
 	function dragElement(el) {
 		let x = 0,
@@ -228,11 +233,9 @@ ymaps.ready(function () {
 		}
 	}
 
-	restore.onclick = function () {
+	restore.onclick = () => {
 		document.getElementById("bar").style.top = 0;
 		document.getElementById("bar").style.left = 0;
 	};
-
 	dragElement(document.getElementById("bar"));
-
 });

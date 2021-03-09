@@ -16,23 +16,7 @@ ymaps.ready(function () {
 
 	ymaps.util.defineClass(ConnectionArrow, {
 		getConnectedPanorama: function () {
-			// Если переход будет осуществляться на пользовательскую панораму,
-			// то создаем объект панорамы MyPanorama.
-			// Если нужно перейти на Яндекс.Панораму, то для получения объекта
-			// панорамы воспользуемся функцией ymaps.panorama.locate.
-			if (this._connectedPanorama.type == "custom") {
-				return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama, panoData));
-			} else if (this._connectedPanorama.type == "yandex") {
-				return ymaps.panorama
-					.locate(this._connectedPanorama.coords)
-					.then(function (panoramas) {
-						if (panoramas.length) {
-							return panoramas[0];
-						} else {
-							return ymaps.vow.reject(new Error("Панорама не нашлась."));
-						}
-					});
-			}
+			return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama, panoData));
 		},
 		// Направление взгляда на панораму, на которую будет осуществляться переход.
 		getDirection: function () {
@@ -53,9 +37,8 @@ ymaps.ready(function () {
 		this._tileLevels = obj.tileLevels;
 		// Получаем массив экземпляров класса, описывающего переход по стрелке из
 		// одной панорамы на другую.
-		this._connectionArrows = obj.connectionArrows.map(function (
-				connectionArrow
-			) {
+		this._connectionArrows = obj.connectionArrows.map(
+			function (connectionArrow) {
 				return new ConnectionArrow(
 					this, // Текущая панорама.
 					connectionArrow.direction, // Направление взгляда на панораму, на которую делаем переход.
