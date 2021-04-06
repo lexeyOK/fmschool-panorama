@@ -62,16 +62,17 @@ ymaps.ready(function () {
 			// В классе должно быть определено поле properties.
 			this.properties = new ymaps.data.Manager();
 			this._panorama = panorama;
-			this._position = position
+			this._position = position;
 			this.text = text;
+			this.image = renderImage(this.text);
 		}
 		getIconSet() {
-			return {
+			return yamaps.vow.Promise({
 				'default': {
-					image: renderImage(this.text),
+					image: this.image,
 					offset: [0, 0]
 				}
-			};
+			})
 		}
 		getPanorama() {
 			return this._panorama;
@@ -87,32 +88,28 @@ ymaps.ready(function () {
 		this._position = obj.position;
 		this._tileSize = obj.tileSize;
 		this._tileLevels = obj.tileLevels;
-		this._markers = obj.markers.map((marker) => new Marker(marker.text), this);
+		this._markers = obj.markers.map((marker) => new Marker(marker.text, marker.position, this), this);
 		this._connectionArrows = obj.connectionArrows.map(
-			function (connectionArrow) {
-				return new ConnectionArrow(
+			 (connectionArrow) => new ConnectionArrow(
 					this,
 					connectionArrow.direction,
 					panoData[connectionArrow.panoID]
-				);
-			},
+			),
 			this);
 	}
 
 	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
-		//getMarkers: function () {
-		//	return this._markers;
-		//},
 		getMarkers: function () {
-			return [new Marker('aaaaa', [0, 0, 0], this)];
+			return this._markers;
 		},
+		//getMarkers: function () {
+		//	return [new Marker('aaaaa', [0, 0, 0], this)];
+		//},
 		// Чтобы добавить на панораму стандартные стрелки переходов,
 		// реализуем метод getConnectionArrows.
 		getConnectionArrows: function () {
 			return this._connectionArrows;
 		},
-		// Чтобы добавить на панораму маркеры-переходы,
-		// нужно реализовать метод getConnectionMarkers.
 		getAngularBBox: function () {
 			return this._angularBBox;
 		},
@@ -162,14 +159,14 @@ ymaps.ready(function () {
 		const map = new Map(Object.entries(obj));
 
 		for (let [name, props] of map) {
-			console.log(props);
+			//console.log(props);
 			panoData[name] = new CreatePano(name,
 				props.connected_pano,
 				props.markers);
 		}
 
 		const panorama = new MyPanorama(panoData.pano1, panoData);
-
+		//console.log(panorama._markers);
 		// Отображаем панораму на странице.
 		const player = new ymaps.panorama.Player('player', panorama, {
 			direction: [0, 0],
