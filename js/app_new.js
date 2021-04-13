@@ -43,10 +43,11 @@ ymaps.ready(function () {
 	});
 
 	function renderImage(text) {
-		var ctx = document.createElement('canvas').getContext('2d');
+		var ctx = document.createElement('canvas')
+			.getContext('2d');
 		ctx.canvas.width = 128;
 		ctx.canvas.height = 32;
-		ctx.fillStyle = '#333333';
+		ctx.fillStyle = '#3333ff';
 		ctx.fillRect(0, 0, 128, 32);
 		ctx.fillStyle = 'white';
 		ctx.font = '12px Arial';
@@ -57,30 +58,33 @@ ymaps.ready(function () {
 	}
 
 	// Класс маркера.
-	class Marker {
-		constructor(text, position, panorama) {
-			// В классе должно быть определено поле properties.
-			this.properties = new ymaps.data.Manager();
-			this._panorama = panorama;
-			this._position = position;
-			this.text = text;
-			this.image = renderImage(this.text);
-		}
-		getIconSet() {
-			return yamaps.vow.Promise({
-				'default': {
-					image: this.image,
-					offset: [0, 0]
-				}
-			})
-		}
-		getPanorama() {
-			return this._panorama;
-		}
-		getPosition() {
-			return this._position;
-		}
-	}
+	function Marker(text, position, panorama) {
+        // В классе должно быть определено поле properties.
+        this.properties = new ymaps.data.Manager();
+        this._panorama = panorama;
+        this._position = position;
+        this._text = text;
+    }
+
+    // Определяем в классе Marker нужные методы.
+	ymaps.util.defineClass(Marker, {
+		getIconSet: function () {
+			return ymaps.vow.Promise.all({
+                    'default': {
+                        image: renderImage(this._text),
+            	        offset: [0, 0]
+                    }
+                }
+            );
+        },
+        getPanorama: function () {
+            return this._panorama;
+        },
+        getPosition: function () {
+            return this._position;
+        }
+    });
+
 
 	function MyPanorama(obj, panoData) {
 		ymaps.panorama.Base.call(this);
@@ -99,9 +103,9 @@ ymaps.ready(function () {
 	}
 
 	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
-		getMarkers: function () {
-			return this._markers;
-		},
+        getMarkers: function () {
+            return this._markers;
+        },
 		//getMarkers: function () {
 		//	return [new Marker('aaaaa', [0, 0, 0], this)];
 		//},
