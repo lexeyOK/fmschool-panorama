@@ -59,31 +59,30 @@ ymaps.ready(function () {
 
 	// Класс маркера.
 	function Marker(text, position, panorama) {
-        // В классе должно быть определено поле properties.
-        this.properties = new ymaps.data.Manager();
-        this._panorama = panorama;
-        this._position = position;
-        this._text = text;
-    }
+		// В классе должно быть определено поле properties.
+		this.properties = new ymaps.data.Manager();
+		this._panorama = panorama;
+		this._position = position;
+		this._text = text;
+	}
 
-    // Определяем в классе Marker нужные методы.
+	// Определяем в классе Marker нужные методы.
 	ymaps.util.defineClass(Marker, {
 		getIconSet: function () {
 			return ymaps.vow.Promise.all({
-                    'default': {
-                        image: renderImage(this._text),
-            	        offset: [0, 0]
-                    }
-                }
-            );
-        },
-        getPanorama: function () {
-            return this._panorama;
-        },
-        getPosition: function () {
-            return this._position;
-        }
-    });
+				'default': {
+					image: renderImage(this._text),
+					offset: [0, 0]
+				}
+			});
+		},
+		getPanorama: function () {
+			return this._panorama;
+		},
+		getPosition: function () {
+			return this._position;
+		}
+	});
 
 
 	function MyPanorama(obj, panoData) {
@@ -94,18 +93,18 @@ ymaps.ready(function () {
 		this._tileLevels = obj.tileLevels;
 		this._markers = obj.markers.map((marker) => new Marker(marker.text, marker.position, this), this);
 		this._connectionArrows = obj.connectionArrows.map(
-			 (connectionArrow) => new ConnectionArrow(
-					this,
-					connectionArrow.direction,
-					panoData[connectionArrow.panoID]
+			(connectionArrow) => new ConnectionArrow(
+				this,
+				connectionArrow.direction,
+				panoData[connectionArrow.panoID]
 			),
 			this);
 	}
 
 	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
-        getMarkers: function () {
-            return this._markers;
-        },
+		getMarkers: function () {
+			return this._markers;
+		},
 		//getMarkers: function () {
 		//	return [new Marker('aaaaa', [0, 0, 0], this)];
 		//},
@@ -187,6 +186,7 @@ ymaps.ready(function () {
 				return player.setPanorama(new MyPanorama(panoData[name], panoData));
 			};
 		}
+		//player.events.add('directionchange', () => console.log(player.getDirection()[0]));
 	})(panoData);
 
 	function dragElement(el) {

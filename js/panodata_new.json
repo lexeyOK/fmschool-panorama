@@ -8,13 +8,14 @@
       "direction": [3.14, 0]
     }],
     "markers": [{
-      "position": [-2, -0.8, 0.2],
-      "text": "пики точеные"
-    },
-    {
-      "position": [2, -0.8, 0.2],
-      "text": "test"
-    }]
+        "position": [-2, -0.8, 0.2],
+        "text": "пики точеные"
+      },
+      {
+        "position": [2, -0.8, 0.2],
+        "text": "test"
+      }
+    ]
   },
   "pano2": {
     "connected_pano": [{
@@ -62,10 +63,20 @@
     }, {
       "panoID": "pano4",
       "direction": [1.047, 0]
+    }, {
+      "panoID": "pano6",
+      "direction": [-0.663, 0]
     }],
     "markers": [{
       "position": [-2, -0.8, 0.2],
       "text": "test"
     }]
+  },
+  "pano6": {
+    "connected_pano": [{
+      "panoID": "pano5",
+      "direction": [1.161, 0]
+    }],
+    "markers": []
   }
 }
