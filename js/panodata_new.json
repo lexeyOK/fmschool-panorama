@@ -76,6 +76,32 @@
     "connected_pano": [{
       "panoID": "pano5",
       "direction": [1.161, 0]
+    }, {
+      "panoID": "pano7",
+      "direction": [-2.775, 0]
+    }, {
+      "panoID": "pano8",
+      "direction": [-1.745, 0]
+    }],
+    "markers": []
+  },
+  "pano7": {
+    "connected_pano": [{
+      "panoID": "pano6",
+      "direction": [-2.513, 0]
+    }, {
+      "panoID": "pano8",
+      "direction": [3.072, 0]
+    }],
+    "markers": []
+  },
+  "pano8": {
+    "connected_pano": [{
+      "panoID": "pano6",
+      "direction": [0.279, 0]
+    }, {
+      "panoID": "pano7",
+      "direction": [1.163, 0]
     }],
     "markers": []
   }
