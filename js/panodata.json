@@ -1,37 +1,108 @@
 {
-  "pano1": [{
-    "panoID": "pano2",
-    "direction": [-0.785, 0]
-  }, {
-    "panoID": "pano3",
-    "direction": [3.14, 0]
-  }],
-  "pano2": [{
-    "panoID": "pano1",
-    "direction": [2.617, 0]
-  }, {
-    "panoID": "pano5",
-    "direction": [1.832, 0]
-  }],
-  "pano3": [{
-    "panoID": "pano4",
-    "direction": [0.523, 0]
-  }, {
-    "panoID": "pano1",
-    "direction": [0, 0]
-  }],
-  "pano4": [{
-    "panoID": "pano3",
-    "direction": [3.925, 0]
-  }, {
-    "panoID": "pano5",
-    "direction": [-1.047, 0]
-  }],
-  "pano5": [{
-    "panoID": "pano2",
-    "direction": [-2.093, 0]
-  }, {
-    "panoID": "pano4",
-    "direction": [1.047, 0]
-  }]
+  "pano1": {
+    "connected_pano": [{
+      "panoID": "pano2",
+      "direction": [-0.785, 0]
+    }, {
+      "panoID": "pano3",
+      "direction": [3.14, 0]
+    }],
+    "markers": [{
+        "position": [-2, -0.8, 0.2],
+        "text": "пики точеные"
+      },
+      {
+        "position": [2, -0.8, 0.2],
+        "text": "test"
+      }
+    ]
+  },
+  "pano2": {
+    "connected_pano": [{
+      "panoID": "pano1",
+      "direction": [2.617, 0]
+    }, {
+      "panoID": "pano5",
+      "direction": [1.832, 0]
+    }],
+    "markers": [{
+      "position": [-2, -0.8, 0.2],
+      "text": "test"
+    }]
+  },
+  "pano3": {
+    "connected_pano": [{
+      "panoID": "pano4",
+      "direction": [0.523, 0]
+    }, {
+      "panoID": "pano1",
+      "direction": [0, 0]
+    }],
+    "markers": [{
+      "position": [-2, -0.8, 0.2],
+      "text": "test"
+    }]
+  },
+  "pano4": {
+    "connected_pano": [{
+      "panoID": "pano3",
+      "direction": [3.925, 0]
+    }, {
+      "panoID": "pano5",
+      "direction": [-1.047, 0]
+    }],
+    "markers": [{
+      "position": [-2, -0.8, 0.2],
+      "text": "test"
+    }]
+  },
+  "pano5": {
+    "connected_pano": [{
+      "panoID": "pano2",
+      "direction": [-2.093, 0]
+    }, {
+      "panoID": "pano4",
+      "direction": [1.047, 0]
+    }, {
+      "panoID": "pano6",
+      "direction": [-0.663, 0]
+    }],
+    "markers": [{
+      "position": [-2, -0.8, 0.2],
+      "text": "test"
+    }]
+  },
+  "pano6": {
+    "connected_pano": [{
+      "panoID": "pano5",
+      "direction": [1.161, 0]
+    }, {
+      "panoID": "pano7",
+      "direction": [-2.775, 0]
+    }, {
+      "panoID": "pano8",
+      "direction": [-1.745, 0]
+    }],
+    "markers": []
+  },
+  "pano7": {
+    "connected_pano": [{
+      "panoID": "pano6",
+      "direction": [-2.513, 0]
+    }, {
+      "panoID": "pano8",
+      "direction": [3.072, 0]
+    }],
+    "markers": []
+  },
+  "pano8": {
+    "connected_pano": [{
+      "panoID": "pano6",
+      "direction": [0.279, 0]
+    }, {
+      "panoID": "pano7",
+      "direction": [1.163, 0]
+    }],
+    "markers": []
+  }
 }
