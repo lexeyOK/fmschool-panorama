@@ -1,15 +1,21 @@
+const timeBeforeLoading = Date.now();
+
 ymaps.ready(function () {
-	// Для начала проверим, поддерживает ли плеер браузер пользователя.
+
+	console.log(`Loading Time: ${Date.now()-timeBeforeLoading} ms`);
+
 	if (!ymaps.panorama.isSupported()) {
 		window.location.href = "/not-supported";
 		return;
 	}
 
-	function ConnectionArrow(currentPanorama, direction, nextPanorama) {
-		this.properties = new ymaps.data.Manager();
-		this._currentPanorama = currentPanorama;
-		this._direction = direction;
-		this._connectedPanorama = nextPanorama;
+	class ConnectionArrow {
+		constructor(currentPanorama, direction, nextPanorama) {
+			this.properties = new ymaps.data.Manager();
+			this._currentPanorama = currentPanorama;
+			this._direction = direction;
+			this._connectedPanorama = nextPanorama;
+		}
 	}
 
 	ymaps.util.defineClass(ConnectionArrow, {
@@ -42,36 +48,51 @@ ymaps.ready(function () {
 		},
 	});
 
-	function renderImage(text) {
-		var ctx = document.createElement('canvas')
+	function renderImage(text, maxWidth, padding) {
+		let context = document.createElement('canvas')
 			.getContext('2d');
-		ctx.canvas.width = 128;
-		ctx.canvas.height = 32;
-		ctx.fillStyle = '#3333ff';
-		ctx.fillRect(0, 0, 128, 32);
-		ctx.fillStyle = 'white';
-		ctx.font = '12px Arial';
-		ctx.textAlign = 'center';
-		ctx.textBaseline = 'middle';
-		ctx.fillText(text, 64, 16);
-		return ctx.canvas;
+		
+		const words = text.split(' ');
+
+		context.font = "14px Arial";
+		const lineHeight=14*1.1;
+
+		context.fillStyle = '#3333ff';
+		context.fillRect(0, 0, maxWidth+padding, words.length*lineHeight+2*padding);
+		let y = 2*padding;
+		context.fillStyle = 'white';
+		let line = '';
+		for(let n = 0; n < words.length; n++) {
+			let testLine = line + words[n] + ' ';
+			var testWidth = context.measureText(testLine).width;
+			if(testWidth > maxWidth) {
+			  context.fillText(line, padding, y);
+			  line = words[n] + ' ';
+			  y += lineHeight;
+			}
+			else {
+			  line = testLine;
+			}
+		}
+		context.fillText(line, padding, y);
+		return context.canvas;
 	}
 
-	// Класс маркера.
-	function Marker(text, position, panorama) {
-		// В классе должно быть определено поле properties.
-		this.properties = new ymaps.data.Manager();
-		this._panorama = panorama;
-		this._position = position;
-		this._text = text;
+	class Marker {
+		constructor(text, position, panorama) {
+			// В классе должно быть определено поле properties.
+			this.properties = new ymaps.data.Manager();
+			this._panorama = panorama;
+			this._position = position;
+			this._text = text;
+		}
 	}
 
-	// Определяем в классе Marker нужные методы.
 	ymaps.util.defineClass(Marker, {
 		getIconSet: function () {
 			return ymaps.vow.Promise.all({
 				'default': {
-					image: renderImage(this._text),
+					image: renderImage(this._text, 200, 10),
 					offset: [0, 0]
 				}
 			});
@@ -96,7 +117,7 @@ ymaps.ready(function () {
 			(connectionArrow) => new ConnectionArrow(
 				this,
 				connectionArrow.direction,
-				panoData[connectionArrow.panoID]
+				panoData[connectionArrow.panoName]
 			),
 			this);
 	}
@@ -105,9 +126,6 @@ ymaps.ready(function () {
 		getMarkers: function () {
 			return this._markers;
 		},
-		//getMarkers: function () {
-		//	return [new Marker('aaaaa', [0, 0, 0], this)];
-		//},
 		// Чтобы добавить на панораму стандартные стрелки переходов,
 		// реализуем метод getConnectionArrows.
 		getConnectionArrows: function () {
@@ -134,42 +152,38 @@ ymaps.ready(function () {
 	const imgPath = 'img-sq/tiles/';
 
 	class CreatePano {
-		constructor(panoName, Arrows, markers) {
+		constructor(panoName, pano) {
 			this.type = 'custom';
 			this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
 			this.position = [0, 0, 0];
 			this.tileSize = [512, 512];
 			this.tileLevels = [{
 					getTileUrl: (x, y) => `${imgPath + panoName}-sq/hq-sq/${x}-${y}.webp`,
-					getImageSize: () => [8192, 4096],
+					getImageSize: () => pano.imageSize,
 				},
 				{
 					getTileUrl: (x, y) => `${imgPath + panoName}-sq/lq/0-0.jpg`,
 					getImageSize: () => [512, 256],
 				}
 			];
-			this.connectionArrows = Arrows;
-			this.markers = markers;
+			this.connectionArrows = pano.connectedPanoramas;
+			this.markers = pano.markers;
 		}
 	}
 
 	let panoData = {};
 
-	(async (panodata) => {
+	(async () => {
 
 		const json = await fetch("./js/panodata.json");
 		const obj = await json.json();
 		const map = new Map(Object.entries(obj));
 
 		for (let [name, props] of map) {
-			//console.log(props);
-			panoData[name] = new CreatePano(name,
-				props.connected_pano,
-				props.markers);
+			panoData[name] = new CreatePano(name, props);
 		}
 
 		const panorama = new MyPanorama(panoData.pano1, panoData);
-		//console.log(panorama._markers);
 		// Отображаем панораму на странице.
 		const player = new ymaps.panorama.Player('player', panorama, {
 			direction: [0, 0],
@@ -178,16 +192,15 @@ ymaps.ready(function () {
 		});
 
 		for (let name of map.keys()) {
-			let btn = document.createElement("button");
-			btn.id = name;
-			btn.innerText = name;
-			bar.append(btn);
+			let button = document.createElement("button");
+			button.id = name;
+			button.innerText = name;
+			bar.append(button);
 			document.getElementById(name).onclick = function () {
 				return player.setPanorama(new MyPanorama(panoData[name], panoData));
 			};
 		}
-		//player.events.add('directionchange', () => console.log(player.getDirection()[0]));
-	})(panoData);
+	})();
 
 	function dragElement(el) {
 		let x = 0,
@@ -219,14 +232,8 @@ ymaps.ready(function () {
 			nx = clamp(0, e.clientX, window.innerWidth);
 			ny = clamp(0, e.clientY, window.innerHeight);
 			// set new position of element:
-			el.style.top = clamp(
-				0,
-				el.offsetTop - y,
-				window.innerHeight - el.offsetHeight) + 'px';
-			el.style.left = clamp(
-				0,
-				el.offsetLeft - x,
-				window.innerWidth - el.offsetWidth) + 'px';
+			el.style.top = clamp(0, el.offsetTop - y, window.innerHeight - el.offsetHeight) + 'px';
+			el.style.left = clamp(0, el.offsetLeft - x, window.innerWidth - el.offsetWidth) + 'px';
 		}
 
 		function clamp(min, val, max) {
