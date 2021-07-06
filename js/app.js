@@ -172,6 +172,7 @@ ymaps.ready(function () {
 	}
 
 	let panoData = {};
+	const navigationBar = document.getElementById("bar");
 
 	(async () => {
 
@@ -195,7 +196,8 @@ ymaps.ready(function () {
 			let button = document.createElement("button");
 			button.id = name;
 			button.innerText = name;
-			bar.append(button);
+			button.ariaLabel = "Переход на панораму";
+			navigationBar.append(button);
 			document.getElementById(name).onclick = function () {
 				return player.setPanorama(new MyPanorama(panoData[name], panoData));
 			};
@@ -203,10 +205,7 @@ ymaps.ready(function () {
 	})();
 
 	function dragElement(el) {
-		let x = 0,
-			y = 0,
-			nx = 0,
-			ny = 0;
+		let x = 0, y = 0, nx = 0, ny = 0;
 		el.onmousedown = function dragMouseDown(e) {
 			e = e || window.event;
 			e.preventDefault();
@@ -242,8 +241,8 @@ ymaps.ready(function () {
 	}
 
 	restore.onclick = () => {
-		document.getElementById("bar").style.top = 0;
-		document.getElementById("bar").style.left = 0;
+		navigationBar.style.top = 0;
+		navigationBar.style.left = 0;
 	};
-	dragElement(document.getElementById("bar"));
+	dragElement(navigationBar);
 });
