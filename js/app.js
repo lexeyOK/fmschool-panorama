@@ -201,7 +201,6 @@ ymaps.ready(function () {
 	}
 
 	let panoData = {};
-	const navigationBar = document.getElementById("bar");
 
 	(async () => {
 		const json = await fetch("./js/panodata.json");
@@ -223,6 +222,7 @@ ymaps.ready(function () {
 		for (let name of map.keys()) {
 			let button = document.createElement("button");
 			button.id = name;
+			button.className+=('hidable');
 			button.innerText = name;
 			button.ariaLabel = "Переход на панораму";
 			navigationBar.append(button);
@@ -230,53 +230,22 @@ ymaps.ready(function () {
 
 		navigationBar.onclick = function (event) {
 			const button = event.target.closest("button");
-			if (!button || !navigationBar.contains(button)) return;
-			return player.setPanorama(
+			if (!button || !navigationBar.contains(button) || !button.classList.contains('hidable')) return;
+			player.setPanorama(
 				new MyPanorama(panoData[button.id], panoData)
 			);
 		};
 	})();
 
-	function dragElement(el) {
-		let x = 0, y = 0, nx = 0, ny = 0;
-		el.onmousedown = function dragMouseDown(e) {
-			e = e || window.event;
-			e.preventDefault();
-			// get the mouse cursor position at start up:
-			nx = e.clientX;
-			ny = e.clientY;
-			document.onmouseup = closeDragElement;
-			document.onmousemove = elementDrag;
-		};
-
-		function closeDragElement() {
-			// stop moving when mouse button is released:
-			document.onmouseup = null;
-			document.onmousemove = null;
-		}
-
-		function elementDrag(e) {
-			e = e || window.event;
-			e.preventDefault();
-			// calculate the new cursor position:
-			x = nx - e.clientX;
-			y = ny - e.clientY;
-			nx = clamp(0, e.clientX, window.innerWidth);
-			ny = clamp(0, e.clientY, window.innerHeight);
-			// set new position of element:
-			el.style.top = clamp(0, el.offsetTop - y, window.innerHeight - el.offsetHeight) + 'px';
-			el.style.left = clamp(0, el.offsetLeft - x, window.innerWidth - el.offsetWidth) + 'px';
-		}
-
-		function clamp(min, val, max) {
-			return Math.min(Math.max(val, min), max);
-		}
-	}
-
 	restore.onclick = () => {
-		navigationBar.style.top = 0;
-		navigationBar.style.left = 0;
+		const buttons = document.getElementsByClassName('hidable');
+		for(button of buttons) {
+			if(button.classList.contains('hidden')) {
+				button.classList.remove('hidden');
+			}
+			else {
+				button.classList.add('hidden');
+			}
+		}
 	};
-
-	dragElement(navigationBar);
 });

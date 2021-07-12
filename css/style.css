@@ -10,7 +10,7 @@ body {
   background: linear-gradient(63deg, rgba(33,194,111,1) 0%, rgba(45,90,240,1) 100%);
 }
 
-#bar {
+#navigationBar {
   position: absolute;
   top: 0;
   z-index: 1;
@@ -34,8 +34,11 @@ button, #help {
   margin: 0.2em;
 }
 
-button:hover,#help:hover{
-  transition: background 0.11s ;
+button:hover, #help:hover {
+  transition: background 0.2s ;
   background: #aaa;
 }
 
+.hidden {
+  display: none;
+}
