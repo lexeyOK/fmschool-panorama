@@ -1,8 +1,7 @@
 const timeBeforeLoading = Date.now();
 
 ymaps.ready(function () {
-
-	console.log(`Loading Time: ${Date.now()-timeBeforeLoading} ms`);
+	console.log(`Loading Time: ${Date.now() - timeBeforeLoading} ms`);
 
 	if (!ymaps.panorama.isSupported()) {
 		window.location.href = "/not-supported";
@@ -25,7 +24,9 @@ ymaps.ready(function () {
 			// Если нужно перейти на Яндекс.Панораму, то для получения объекта
 			// панорамы воспользуемся функцией ymaps.panorama.locate.
 			if (this._connectedPanorama.type == "custom") {
-				return ymaps.vow.resolve(new MyPanorama(this._connectedPanorama, panoData));
+				return ymaps.vow.resolve(
+					new MyPanorama(this._connectedPanorama, panoData)
+				);
 			} else if (this._connectedPanorama.type == "yandex") {
 				return ymaps.panorama
 					.locate(this._connectedPanorama.coords)
@@ -33,7 +34,9 @@ ymaps.ready(function () {
 						if (panoramas.length) {
 							return panoramas[0];
 						} else {
-							return ymaps.vow.reject(new Error("Панорама не нашлась."));
+							return ymaps.vow.reject(
+								new Error("Панорама не нашлась.")
+							);
 						}
 					});
 			}
@@ -49,29 +52,27 @@ ymaps.ready(function () {
 	});
 
 	function renderImage(text, maxWidth, padding) {
-		let context = document.createElement('canvas')
-			.getContext('2d');
-		
-		const words = text.split(' ');
+		let context = document.createElement("canvas").getContext("2d");
+
+		const words = text.split(" ");
 
 		context.font = "14px Arial";
-		const lineHeight=14*1.1;
+		const lineHeight = 14 * 1.1;
 
-		context.fillStyle = '#3333ff';
-		context.fillRect(0, 0, maxWidth+padding, words.length*lineHeight+2*padding);
-		let y = 2*padding;
-		context.fillStyle = 'white';
-		let line = '';
-		for(let n = 0; n < words.length; n++) {
-			let testLine = line + words[n] + ' ';
+		context.fillStyle = "#3333ff";
+		context.fillRect(0, 0, maxWidth + padding, words.length * lineHeight + 2 * padding);
+		let y = 2 * padding;
+		context.fillStyle = "white";
+		let line = "";
+		for (let n = 0; n < words.length; n++) {
+			let testLine = line + words[n] + " ";
 			var testWidth = context.measureText(testLine).width;
-			if(testWidth > maxWidth) {
-			  context.fillText(line, padding, y);
-			  line = words[n] + ' ';
-			  y += lineHeight;
-			}
-			else {
-			  line = testLine;
+			if (testWidth > maxWidth) {
+				context.fillText(line, padding, y);
+				line = words[n] + " ";
+				y += lineHeight;
+			} else {
+				line = testLine;
 			}
 		}
 		context.fillText(line, padding, y);
@@ -91,10 +92,10 @@ ymaps.ready(function () {
 	ymaps.util.defineClass(Marker, {
 		getIconSet: function () {
 			return ymaps.vow.Promise.all({
-				'default': {
+				default: {
 					image: renderImage(this._text, 200, 10),
-					offset: [0, 0]
-				}
+					offset: [0, 0],
+				},
 			});
 		},
 		getPanorama: function () {
@@ -102,9 +103,8 @@ ymaps.ready(function () {
 		},
 		getPosition: function () {
 			return this._position;
-		}
+		},
 	});
-
 
 	function MyPanorama(obj, panoData) {
 		ymaps.panorama.Base.call(this);
@@ -112,14 +112,22 @@ ymaps.ready(function () {
 		this._position = obj.position;
 		this._tileSize = obj.tileSize;
 		this._tileLevels = obj.tileLevels;
-		this._markers = obj.markers.map((marker) => new Marker(marker.text, marker.position, this), this);
+		this._markers = obj.markers.map(
+			(marker) => new Marker(
+				marker.text,
+				marker.position,
+				this
+			),
+			this
+		);
 		this._connectionArrows = obj.connectionArrows.map(
 			(connectionArrow) => new ConnectionArrow(
 				this,
 				connectionArrow.direction,
 				panoData[connectionArrow.panoName]
 			),
-			this);
+			this
+		);
 	}
 
 	ymaps.util.defineClass(MyPanorama, ymaps.panorama.Base, {
@@ -149,22 +157,24 @@ ymaps.ready(function () {
 	});
 
 	const pi = Math.PI;
-	const imgPath = 'img-sq/tiles/';
+	const imgPath = "img-sq/tiles/";
 
 	class CreatePano {
 		constructor(panoName, pano) {
-			this.type = 'custom';
+			this.type = "custom";
 			this.angularBBox = [pi / 2, 2 * pi + pi / 4, -pi / 2, pi / 4];
 			this.position = [0, 0, 0];
 			this.tileSize = [512, 512];
-			this.tileLevels = [{
-					getTileUrl: (x, y) => `${imgPath + panoName}-sq/hq-sq/${x}-${y}.webp`,
+			this.tileLevels = [
+				{
+					getTileUrl: (x, y) =>
+						`${imgPath + panoName}-sq/hq-sq/${x}-${y}.webp`,
 					getImageSize: () => pano.imageSize,
 				},
 				{
 					getTileUrl: (x, y) => `${imgPath + panoName}-sq/lq/0-0.jpg`,
 					getImageSize: () => [512, 256],
-				}
+				},
 			];
 			this.connectionArrows = pano.connectedPanoramas;
 			this.markers = pano.markers;
@@ -175,7 +185,6 @@ ymaps.ready(function () {
 	const navigationBar = document.getElementById("bar");
 
 	(async () => {
-
 		const json = await fetch("./js/panodata.json");
 		const obj = await json.json();
 		const map = new Map(Object.entries(obj));
@@ -201,11 +210,12 @@ ymaps.ready(function () {
 		}
 
 		navigationBar.onclick = function (event) {
-			const button = event.target.closest('button');
-			if(!button || !navigationBar.contains(button)) return;
-			return player.setPanorama(new MyPanorama(panoData[button.id], panoData));
+			const button = event.target.closest("button");
+			if (!button || !navigationBar.contains(button)) return;
+			return player.setPanorama(
+				new MyPanorama(panoData[button.id], panoData)
+			);
 		};
-		
 	})();
 
 	function dragElement(el) {
@@ -248,6 +258,6 @@ ymaps.ready(function () {
 		navigationBar.style.top = 0;
 		navigationBar.style.left = 0;
 	};
-	
+
 	dragElement(navigationBar);
 });
