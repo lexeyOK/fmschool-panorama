@@ -53,7 +53,6 @@ ymaps.ready(function () {
 
 	function renderImage(text, maxWidth, padding) {
 		let context = document.createElement("canvas").getContext("2d");
-
 		const words = text.split(" ");
 
 		context.font = "14px Arial";
@@ -79,6 +78,17 @@ ymaps.ready(function () {
 		return context.canvas;
 	}
 
+	function loadImage(src) {
+		return new ymaps.vow.Promise(function (resolve) {
+			var image = new Image();
+			image.onload = function () {
+				resolve(image);
+			};
+			image.crossOrigin = "anonymous";
+			image.src = src;
+		});
+	}
+
 	class Marker {
 		constructor(text, position, panorama) {
 			// В классе должно быть определено поле properties.
@@ -91,11 +101,20 @@ ymaps.ready(function () {
 
 	ymaps.util.defineClass(Marker, {
 		getIconSet: function () {
-			return ymaps.vow.Promise.all({
-				default: {
-					image: renderImage(this._text, 200, 10),
-					offset: [0, 0],
-				},
+			return ymaps.vow.Promise.all([
+				loadImage('./img/icon.svg'),
+				new ymaps.vow.Promise((r) => r(this._text))
+			]).spread(function (defaultImage,text) {
+				return {
+					default: {
+						image: defaultImage,
+						offset: [0, 0],
+					},
+					expanded: {
+						image: renderImage(text, 200, 10),
+						offset: [0, 0],
+					},
+				};
 			});
 		},
 		getPanorama: function () {
@@ -195,7 +214,7 @@ ymaps.ready(function () {
 
 		const panorama = new MyPanorama(panoData.pano1, panoData);
 		// Отображаем панораму на странице.
-		const player = new ymaps.panorama.Player('player', panorama, {
+		const player = new ymaps.panorama.Player("player", panorama, {
 			direction: [0, 0],
 			controls: ["zoomControl"],
 			hotkeysEnabled: true,
