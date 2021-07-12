@@ -1,9 +1,10 @@
-html,body {
+html,
+body {
   width: 100%;
   margin: 0;
   padding: 0;
   text-decoration: none;
-  font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: Roboto, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .content {
