@@ -1,5 +1,5 @@
 # fmschool-panorama
-## Панорама для Физ-Мат школы  
+Панорама для Физ-Мат школы  
 ### Исспользовано 
   * [Yandex Map API](https://yandex.ru/dev/maps/jsapi/)
   * JS, HTML, CSS
