@@ -6,8 +6,7 @@ html, body, .player {
 }
 
 body {
-  background: rgb(33,194,111);
-  background: linear-gradient(63deg, rgba(33,194,111,1) 0%, rgba(45,90,240,1) 100%);
+  background: rgb(33, 68, 182);
 }
 
 #navigationBar {
@@ -24,7 +23,7 @@ body {
 button, #help {
   text-decoration: none;
   font-size: 1rem;
-  font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;;
+  font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: #000;
   background: #fff;
   border: 0;
@@ -40,5 +39,43 @@ button:hover, #help:hover {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
+}
+
+.wraper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  left:50%;
+  top:50%;
+  transform: translate(-50%,-50%);
+  font-size: 2rem;
+  font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #fff;
+}
+
+.spiner {
+  color: rgb(22, 211, 113);
+  background: transparent;
+  border:4px solid;
+  border-bottom-color: transparent;
+  border-radius:100%;
+  width: 100px;
+  height: 100px;
+
+
+  animation: ball-clip-rotate .75s linear infinite;
+}
+
+@keyframes ball-clip-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
 }

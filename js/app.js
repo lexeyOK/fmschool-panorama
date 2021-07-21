@@ -2,7 +2,7 @@ const timeBeforeLoading = Date.now();
 
 ymaps.ready(function () {
 	console.log(`Loading Time: ${Date.now() - timeBeforeLoading} ms`);
-
+	
 	if (!ymaps.panorama.isSupported()) {
 		window.location.href = "/not-supported";
 		return;
@@ -59,7 +59,7 @@ ymaps.ready(function () {
 		const lineHeight = 14 * 1.1;
 
 		context.fillStyle = "#3333ff";
-		context.fillRect(0, 0, maxWidth + padding, words.length * lineHeight + 2 * padding);
+		context.fillRect(0, 0, maxWidth + padding, Math.max(50,words.length * lineHeight + 2 * padding));
 		let y = 2 * padding;
 		context.fillStyle = "white";
 		let line = "";
@@ -222,7 +222,7 @@ ymaps.ready(function () {
 		for (let name of map.keys()) {
 			let button = document.createElement("button");
 			button.id = name;
-			button.className+=('hidable');
+			button.className+='hidable';
 			button.innerText = name;
 			button.ariaLabel = "Переход на панораму";
 			navigationBar.append(button);
@@ -235,6 +235,8 @@ ymaps.ready(function () {
 				new MyPanorama(panoData[button.id], panoData)
 			);
 		};
+		navigationBar.classList.remove('hidden');
+		document.querySelector('.wraper').classList.add('hidden')
 	})();
 
 	restore.onclick = () => {
