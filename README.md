@@ -17,7 +17,7 @@ php -S localhost:8080 #will serve on http://localhost:8080/
 python3 -m http.server #will serve on http://127.0.0.1:8080/
 ```
 ## Get Yamaps api key
-- create yandex profile at passport.yandex.ru/registration 
+- create yandex profile at https://passport.yandex.ru/registration
 - go through this [guide](https://yandex.com/dev/maps/jsapi/doc/2.1/quick-start/index.html#get-api-key) and get your api key 
 - change api key in script tag to your own
 
