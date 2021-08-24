@@ -236,7 +236,7 @@ ymaps.ready(function () {
 			);
 		};
 		navigationBar.classList.remove('hidden');
-		document.querySelector('.wraper').classList.add('hidden')
+		document.querySelector('.wrapper').classList.add('hidden')
 	})();
 
 	restore.onclick = () => {

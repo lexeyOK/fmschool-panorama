@@ -42,7 +42,7 @@ button:hover, #help:hover {
   display: none !important;
 }
 
-.wraper {
+.wrapper {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -55,7 +55,7 @@ button:hover, #help:hover {
   color: #fff;
 }
 
-.spiner {
+.spinner {
   color: rgb(22, 211, 113);
   background: transparent;
   border:4px solid;

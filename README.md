@@ -4,7 +4,7 @@
   - JAM stack (?)
   - [Yandex Map API](https://yandex.ru/dev/maps/jsapi/)
   - git, github
-  - image-magick, webp, google-squoosh
+  - ImageMagick, webp, squoosh-cli
   
 ## [Demo](https://lexeyok.github.io/fmschool-panorama/)
 
