@@ -9,7 +9,7 @@
     }],
     "markers": [{
         "position": [-2, -0.8, 0.2],
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean egestas volutpat scelerisque. Vivamus tortor dolor, suscipit quis pulvinar eu, iaculis commodo neque. Proin tincidunt ipsum a mauris vehicula dignissim."
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean egestas volutpat scelerisque."
       },{
         "position": [2, -0.8, 0.2],
         "text": "test"
@@ -111,5 +111,21 @@
     }],
     "markers": [],
     "imageSize":[8192, 4096]
+  },
+  "pano9": {
+    "connectedPanoramas": [{
+      "panoName": "pano7",
+      "direction": [0, 0]
+    }],
+    "markers": [],
+    "imageSize":[8704, 4352]
+  },
+  "fup": {
+    "connectedPanoramas": [{
+      "panoName": "pano6",
+      "direction": [0, 0]
+    }],
+    "markers": [],
+    "imageSize":[3556, 1778]
   }
 }
