@@ -86,6 +86,9 @@
     }, {
       "panoName": "pano8",
       "direction": [-1.745, 0]
+    }, {
+      "panoName": "fup",
+      "direction": [3.14, 0.5]
     }],
     "markers": [],
     "imageSize":[8192, 4096]
