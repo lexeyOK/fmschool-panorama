@@ -6,7 +6,7 @@
   - git, github
   - ImageMagick, webp, squoosh-cli
   
-## [Demo](https://lexeyok.github.io/fmschool-panorama/)
+### [Demo](https://lexeyok.github.io/fmschool-panorama/)
 
 # Local Development 
 For local development use any web server to serve `index.html`  
@@ -22,4 +22,19 @@ python3 -m http.server #will serve on http://127.0.0.1:8080/
 - change api key in script tag to your own
 
 # How to prepare and add panoramas
-*WIP*
+You need to prepare spherical panorama:
+1. make your panorama with google view or anything else
+2. you will need to cut it in tiles 512x512 px and low quality version (use [sh script](https://github.com/lexeyOK/fmschool-panorama/blob/main/sh/pano-maker.sh) for it )
+3. put panorama folder in tiles folder
+
+here is representation of images folder structure:
+```
+img
+  - tiles
+    - pano1
+      - hq
+      - lq
+    - pano2
+      - ...
+```
+hq folder contains cuted tiles, lq contains low quality version of pano
