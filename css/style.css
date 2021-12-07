@@ -32,12 +32,12 @@ button, #help {
   padding: 0.25em 0.5em;
   margin: 0.2em;
 }
-
-button:hover, #help:hover {
-  transition: background 0.2s ;
-  background: #aaa;
+@media(hover: hover) and (pointer: fine){
+  button:hover, #help:hover {
+    transition: background 0.2s ;
+    background: #aaa;
+  }
 }
-
 .hidden {
   display: none !important;
 }
@@ -63,8 +63,6 @@ button:hover, #help:hover {
   border-radius:100%;
   width: 100px;
   height: 100px;
-
-
   animation: ball-clip-rotate .75s linear infinite;
 }
 
